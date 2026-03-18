@@ -36,8 +36,9 @@ Always produce exactly these three sections, in this order, formatted as fenced 
 
 Rules:
 - Read all user-configurable values from `ai.config.*`
-- Read any workflow variables (set by earlier blocks or user input) from `ai.vars.*`
-- Use `ai.vars[ai.config.outputVarName]` pattern for output variables so the user's config field names control where results land
+- **CRITICAL — input vs output variable pattern:**
+  - `inputVariable` type config fields are resolved by MindStudio BEFORE the code runs. The value arrives as a plain string. Always read them as `ai.config.fieldName` directly. NEVER use `ai.vars[ai.config.fieldName]` for inputs.
+  - `outputVariableName` type config fields hold the NAME of a workflow variable chosen by the user. Always write outputs as `ai.vars[ai.config.outputVarName] = value` so results land in the right place.
 - Always validate required fields and throw clear errors if missing
 - Use `ai.log(...)` to show progress to the user during long calls
 - Use `await fetch(...)` for HTTP calls — no imports needed in Sandbox
@@ -49,7 +50,7 @@ Template structure:
 ```javascript
 // --- Read config ---
 const apiKey   = ai.config.apiKey;
-const inputVal = ai.config.inputField;        // or ai.vars.someVar if set by workflow
+const inputVal = ai.config.inputField;   // inputVariable type: value is already resolved, read directly from ai.config
 const optional = ai.config.optionalField || "default_value";
 
 // --- Validate ---
@@ -81,6 +82,7 @@ const data = await res.json();
 ai.log("Done. Storing results...");
 
 // --- Store outputs ---
+// outputVariableName type: user names the variable, so use ai.vars[ai.config.outputMain] pattern
 ai.vars[ai.config.outputMain]  = data.someField ?? JSON.stringify(data);
 ai.vars[ai.config.outputRaw]   = JSON.stringify(data);
 ```
@@ -91,7 +93,7 @@ ai.vars[ai.config.outputRaw]   = JSON.stringify(data);
 
 Rules:
 - Use `"secret"` type for API keys — never `"text"`
-- Use `"inputVariable"` type for fields that should accept a `{{variable}}` from the workflow
+- Use `"inputVariable"` type for fields that should accept a `{{variable}}` from the workflow. MindStudio resolves the value before code runs — read it in code as `ai.config.fieldName`, not via `ai.vars`
 - Use `"select"` type with `selectOptions` for fixed-choice fields (e.g. model names, effort levels)
 - Use `"outputVariableName"` type for fields where the user names their output variables
 - Group into logical sections with clear `title` values
@@ -115,7 +117,7 @@ config = {
           type: "inputVariable",
           label: "Input Field Label",
           variable: "inputField",
-          helpText: "Description of what this input does. Use a {{variable}} from your workflow."
+          helpText: "Description of what this input does. Use a {{variable}} from your workflow or type a value directly."
         },
         {
           type: "select",
@@ -159,20 +161,18 @@ Rules:
 - Use realistic placeholder values (not "test123")
 - Use the actual default output variable names the user will likely use
 - Match the output variable name values to what the user typed in the Output section config fields
+- For `inputVariable` type fields, set the value directly in `config` (not in `vars`) — e.g. `inputField: "AAPL"`. MindStudio does not require a vars entry for these during testing.
 
 Template:
 ```javascript
 environment = {
-  vars: {
-    // workflow variables read via ai.vars (e.g. set by earlier blocks)
-    someWorkflowVar: "example value from workflow"
-  },
+  vars: {},
   config: {
-    apiKey:       "your-api-key-here",
-    inputField:   "A realistic example input for this API",
+    apiKey:        "your-api-key-here",
+    inputField:    "A realistic example input for this API",
     optionalField: "value_a",
-    outputMain:   "result",
-    outputRaw:    "resultJSON"
+    outputMain:    "result",
+    outputRaw:     "resultJSON"
   }
 }
 ```
@@ -217,6 +217,7 @@ export const handler = async () => {
 
 ## Common Mistakes to Avoid
 
+- **NEVER use `ai.vars[ai.config.fieldName]` for input fields.** `inputVariable` type config fields are resolved by MindStudio before the code runs and arrive as plain strings via `ai.config.fieldName`. Only use the `ai.vars[ai.config.outputVarName]` pattern for output variables where the user has named where results should land.
 - Never use `URLSearchParams` in Sandbox — it is not available. Build query strings manually instead:
   ```javascript
   let query = "?token=" + apiKey;
