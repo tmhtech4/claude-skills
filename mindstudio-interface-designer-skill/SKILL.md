@@ -1,20 +1,6 @@
 ---
 name: mindstudio-interface-designer-skill
 description: Master frontend skill for MindStudio Interface Designer. Use this skill for every UI/UX request including creating, designing, building, improving, reviewing, or refactoring any interface, component, or web app inside MindStudio. Supports onboarding flows, dashboards, landing pages, forms, wizards, data visualizations, admin panels, e-commerce, SaaS apps, and portfolios. Always interviews the user first, commits to a bold aesthetic direction, then builds production-grade code.
-version: "2.0.0"
-tags:
-  - MindStudio
-  - Interface Designer
-  - React
-  - Frontend
-  - UI
-  - UX
-  - Design System
-  - Tailwind
-  - shadcn
-  - Accessibility
-  - Performance
-  - Animation
 ---
 
 # MindStudio Interface Designer — Master Frontend Skill
