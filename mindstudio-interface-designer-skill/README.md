@@ -1,5 +1,8 @@
 # MindStudio Interface Designer Skill
 
+> **Original skill authored by [Sol](https://github.com/Sol1986) — [Sol1986/claude-skills](https://github.com/Sol1986/claude-skills/tree/main/mindstudio-interface-designer-skill).**
+> This fork adds Interface Designer environment documentation, full bridge API examples (`useTemplateVariables`, `uploadFile`, `requestFile`), a Phase 13 Compile & Deploy section, and two new usage examples. All core skill logic, design philosophy, and authorship belong to Sol.
+
 A master Claude Code skill for building production-grade React interfaces inside the [MindStudio Interface Designer](https://university.mindstudio.ai/docs/building-ai-agents/interface-designer).
 
 Drop this skill into your Claude Code project via the MindStudio local tunnel and Claude will interview you before writing a single line of code, commit to a bold aesthetic direction, wire all inputs to your MindStudio workflow variables correctly, and deliver a component that compiles and hands off to the next block without breaking.
@@ -127,6 +130,14 @@ The skill enforces that `window.MindStudio.submit` and manual `setTimeout` loadi
 | `skill.json` | Skill metadata for registries and tooling |
 
 ---
+
+## Attribution
+
+This skill was originally created by **[Sol](https://github.com/Sol1986)** and published at [Sol1986/claude-skills](https://github.com/Sol1986/claude-skills/tree/main/mindstudio-interface-designer-skill) under the MIT License.
+
+This fork extends the original with Interface Designer environment documentation and bridge API examples. All credit for the core skill design, 12-phase methodology, aesthetic archetypes, and MindStudio bridge integration goes to the original author.
+
+If you find this skill useful, consider starring the [original repository](https://github.com/Sol1986/claude-skills).
 
 ## License
 
