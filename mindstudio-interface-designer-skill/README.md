@@ -31,8 +31,10 @@ Drop this skill into your Claude Code project via the MindStudio local tunnel an
 3. Open your MindStudio project and add a **User Input** block to your workflow
 4. In the block's Optional Settings, switch **Interface** to **Custom (Beta)**
 5. Click **Configure Interface** to open the Interface Designer
-6. Start the dev environment and connect via the local tunnel to Claude Code
-7. Describe your interface — Claude will handle the rest
+6. Use the **Chat Tab** to describe your interface in natural language, or the **Code Tab** to write directly
+7. Click **Start** to spin up the dev environment and connect via the local tunnel to Claude Code
+8. Iterate with vibe-coding or direct edits — check the **Live Preview** and **Logs Tab** as you go
+9. When ready, click **Compile** to deploy the interface to your agent — this is the required final step
 
 ---
 
@@ -54,6 +56,21 @@ The skill follows a 12-phase process:
 | 10. Layout Patterns | Responsive layouts for forms, wizards, and dashboards |
 | 11. Industry Guidance | SaaS, healthcare, fintech, beauty, creative — context-specific design direction |
 | 12. Pre-Delivery Checklist | 30-point checklist covering visual, interaction, layout, accessibility, performance, and MindStudio compatibility |
+| 13. Compile & Deploy | Review in Live Preview, check Logs Tab for errors, click Compile to build and deploy the interface |
+
+---
+
+## The Interface Designer Environment
+
+The Interface Designer has three tabs and two key controls you need to know:
+
+- **Chat Tab** — describe your UI in natural language; the AI generates it for you (vibe-coding)
+- **Code Tab** — edit the generated React code directly, install npm packages, add custom logic
+- **Logs Tab** — real-time debug feed; check here if anything goes wrong
+- **Compile** — the final required step; deploys your interface to the agent (bottom dev controls)
+- **Live Preview** — instant rendering of changes as you type or edit
+
+> **Always click Compile** when you're done. An interface that hasn't been compiled isn't deployed.
 
 ---
 
