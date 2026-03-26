@@ -201,3 +201,101 @@ The skill always asks for variable names before building. These conventions prod
 | Prefixed for clarity | `lsi_keywords` vs `keywords` | When two similar fields exist |
 
 Avoid generic names like `input1`, `field_value`, `data`, or `text` — these make downstream prompt engineering harder to read and maintain.
+
+---
+
+## Example 6 — Resume Upload Tool (uploadFile)
+
+**Prompt:**
+> Build an interface for an AI resume analyzer. The user uploads their resume PDF and adds a brief note about the job they're applying for. Clean and professional.
+
+**Aesthetic Direction:** Refined Minimal — white background, teal accent, Fraunces display + Figtree body. Drag-and-drop upload area as the hero element.
+
+**Variable Mapping:**
+
+| Field | Variable | Type |
+|-------|----------|------|
+| Uploaded resume | `resume_url` | string (CDN URL) |
+| Job description note | `job_note` | string |
+
+**Bridge Output:**
+```tsx
+import { submit, useIsRunning, uploadFile } from './bridge'
+
+/**
+ * MindStudio Variables Output:
+ * - resume_url (string) — CDN URL of the uploaded resume PDF
+ * - job_note (string) — brief note about the target job
+ */
+
+const handleFile = async (file: File) => {
+  const url = await uploadFile(file) // returns CDN URL
+  setResumeUrl(url)
+}
+
+submit({ resume_url: resumeUrl, job_note })
+```
+
+**Downstream workflow usage:** `{{resume_url}}`, `{{job_note}}`
+
+---
+
+## Example 7 — Personalized Onboarding (useTemplateVariables)
+
+**Prompt:**
+> Build a step 2 onboarding form for a SaaS product. The user's name and plan were already collected in step 1. Show their name in the header and customize the options based on their plan (pro vs. basic). Warm and friendly feel.
+
+**Aesthetic Direction:** Warm & Approachable — cream background, terracotta accent, Nunito display + DM Sans body. Greeting header uses the upstream `user_name` variable.
+
+**Variable Mapping:**
+
+| Field | Variable | Type |
+|-------|----------|------|
+| Primary use case | `primary_use_case` | string (pill selector) |
+| Team size | `team_size` | string (pill selector) |
+| Notifications preference | `notifications` | string |
+
+**Upstream Variables Read (via useTemplateVariables):**
+
+| Variable | Source | Used For |
+|----------|--------|----------|
+| `user_name` | Step 1 block | Personalized greeting header |
+| `plan` | Step 1 block | Show pro-only options conditionally |
+
+**Bridge Output:**
+```tsx
+import { submit, useIsRunning, useTemplateVariables } from './bridge'
+
+/**
+ * MindStudio Variables Output:
+ * - primary_use_case (string) — selected primary use case
+ * - team_size (string) — selected team size bracket
+ * - notifications (string) — notification preference
+ *
+ * Variables read from upstream (via useTemplateVariables):
+ * - user_name (string) — from previous block, displayed in greeting header
+ * - plan (string) — 'pro' or 'basic', controls which options render
+ */
+
+const vars = useTemplateVariables()
+// vars.user_name — display name in header
+// vars.plan — conditionally render pro-only options
+
+submit({ primary_use_case, team_size, notifications })
+```
+
+**Downstream workflow usage:** `{{primary_use_case}}`, `{{team_size}}`, `{{notifications}}`
+
+---
+
+## Notes on Bridge API Usage
+
+The bridge exposes 5 exports. Use the right one for the job:
+
+| Bridge Export | Use When |
+|---|---|
+| `submit(values)` | Always — required to advance the workflow |
+| `useIsRunning()` | Always — drives the submit button loading state |
+| `useTemplateVariables()` | Your interface needs to read variables set by earlier workflow blocks |
+| `uploadFile(file)` | User provides a file via a file input (`<input type="file">`) |
+| `requestFile(options?)` | User should pick from their MindStudio media library |
